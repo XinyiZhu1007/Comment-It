@@ -5,11 +5,11 @@ var path = require('path');
 var request = require('request');
 var cheerio = require('cheerio');
 
-var Comment = require('../models/Comments.js');
-var Article = require('../models/Articles.js');
+var Comments = require('../models/Comments.js');
+var Articles = require('../models/Articles.js');
 
 router.get('/', function(req, res) {
-    res.redirect('/articles');
+    res.redirect('/');
 });
 
 router.get('/scrape', function(req, res) {
@@ -27,7 +27,7 @@ router.get('/scrape', function(req, res) {
 
                 titlesArray.push(result.title);
 
-                Article.count({ title: result.title}, function (err, test){
+                Articles.count({ title: result.title}, function (err, test){
                     if(test == 0){
 
                         var entry = new Article (result);

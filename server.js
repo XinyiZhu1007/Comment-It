@@ -17,7 +17,7 @@ app.engine('handlebars', handlebars({
 }));
 app.set('view engine', 'handlebars');
 
-mongoose.connect('mongodb://heroku_8k7nh22p:9ijfvvsjua1kv3jhh5l147bbdg@ds229732.mlab.com:29732/heroku_8k7nh22p');
+mongoose.connect('mongodb://heroku_59rv29xp:lqtqcc0guqrr83e0c4i5iq77f4@ds157742.mlab.com:57742/heroku_59rv29xp');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
