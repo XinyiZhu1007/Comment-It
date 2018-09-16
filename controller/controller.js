@@ -9,11 +9,11 @@ var Comments = require('../models/Comments.js');
 var Articles = require('../models/Articles.js');
 
 router.get('/', function(req, res) {
-    res.redirect('/');
+    res.render('./index');
 });
 
 router.get('/scrape', function(req, res) {
-    request('http://www.sciencemag.org/news', function(error, response, html) {
+    request('http://www.sciencemag.org/news/latest-news', function(error, response, html) {
         var $ = cheerio.load(html);
         var titlesArray = [];
         $('.media__headline').each(function(i, element) {
@@ -27,10 +27,10 @@ router.get('/scrape', function(req, res) {
 
                 titlesArray.push(result.title);
 
-                Articles.count({ title: result.title}, function (err, test){
+                Articles.countDocuments({ title: result.title}, function (err, test){
                     if(test == 0){
 
-                        var entry = new Article (result);
+                        var entry = new Articles (result);
 
                         entry.save(function(err, doc) {
                             if (err) {
@@ -39,90 +39,92 @@ router.get('/scrape', function(req, res) {
                                 console.log(doc);
                             }
                         });
-
                     }
                 });
               }
               else{
                 console.log('Article exists.');
               }
-
             }
             else{
                 console.log('Not saved to database, missing data');
             }
         });
-        res.redirect('/');
+        res.redirect('/articles');
     });
 });
 
 router.get('/articles', function(req, res) {
-    Articles.find().sort({_id: -1})
+    Articles.find().sort()
+    //{_id: -1}
         .exec(function(err, doc) {
             if(err){
                 console.log(err);
             } else{
                 var artcl = {article: doc};
-                res.render('index', artcl);
+                res.render('./index', artcl);
             }
     });
 });
 
-router.get('/articles-json', function(req, res) {
-    Articles.find({}, function(err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(doc);
-        }
-    });
-});
+// router.get('/articles-json', function(req, res) {
+//     Articles.find({}, function(err, doc) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             res.json(doc);
+//         }
+//     });
+// });
 
-router.get('/clearAll', function(req, res) {
-    Articles.remove({}, function(err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('removed all articles');
-        }
+// router.get('/clearAll', function(req, res) {
+//     Articles.remove({}, function(err, doc) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log('removed all articles');
+//         }
 
-    });
-    res.redirect('/articles-json');
-});
+//     });
+//     res.redirect('/articles-json');
+// });
 
 router.get('/readArticle/:id', function(req, res){
   var articleId = req.params.id;
-  var hbsObj = {
+  var articleObj = {
     article: [],
+    author: [],
     body: []
   };
 
     Articles.findOne({ _id: articleId })
-      .populate('comment')
+      .populate('comments')
       .exec(function(err, doc){
       if(err){
         console.log('Error: ' + err);
       } 
       else {
-        hbsObj.article = doc;
-        var link = doc.link;
+        var link = 'http://www.sciencemag.org/' + doc.link;
         request(link, function(error, response, html) {
           var $ = cheerio.load(html);
 
-          $('.l-col__main').each(function(i, element){
-            hbsObj.body = $(this).children('.c-entry-content').children('p').text();
-            res.render('article', hbsObj);
-            return false;
+          articleObj.author = $('p.byline.byline--article').children('a').text();
+
+          $('div.article__body').children('p').each(function(i, element){
+            text = $(this).text();
+            articleObj.body.push(text);
+            res.render('./article', articleObj);
           });
+          return false;
         });
       }
 
     });
 });
 
-router.post('/comment/:id', function(req, res) {
+router.post('/comments/:id', function(req, res) {
   var user = req.body.name;
-  var content = req.body.comment;
+  var content = req.body.comments;
   var articleId = req.params.id;
 
   var commentObj = {
@@ -130,15 +132,17 @@ router.post('/comment/:id', function(req, res) {
     body: content
   };
  
-  var newComment = new Comment(commentObj);
+  var newComment = new Comments(commentObj);
 
   newComment.save(function(err, doc) {
+      
       if (err) {
+          console.log(doc);
           console.log(err);
       } else {
           console.log(doc._id)
           console.log(articleId)
-          Articles.findOneAndUpdate({ "_id": req.params.id }, {$push: {'comment':doc._id}}, {new: true})
+          Articles.findOneAndUpdate({ "_id": req.params.id }, {$push: {'comments':doc._id}}, {new: true})
             .exec(function(err, doc) {
                 if (err) {
                     console.log(err);

@@ -22,7 +22,7 @@ mongoose.connect('mongodb://heroku_59rv29xp:lqtqcc0guqrr83e0c4i5iq77f4@ds157742.
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Connected to Mongo!')
+  console.log('Connected to MongoDB!')
 });
 
 var routes = require('./controller/controller.js');
