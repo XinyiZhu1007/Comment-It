@@ -27,7 +27,7 @@ router.get('/scrape', function(req, res) {
 
                 titlesArray.push(result.title);
 
-                Articles.countDocuments({ title: result.title}, function (err, test){
+                Articles.countDocuments({ title: result.title }, function (err, test){
                     if(test == 0){
 
                         var entry = new Articles (result);
@@ -39,6 +39,8 @@ router.get('/scrape', function(req, res) {
                                 console.log(doc);
                             }
                         });
+
+                        // res.redirect('/articles');
                     }
                 });
               }
@@ -61,80 +63,82 @@ router.get('/articles', function(req, res) {
             if(err){
                 console.log(err);
             } else{
+                console.log(doc);
                 var artcl = {article: doc};
                 res.render('./index', artcl);
             }
-    });
+        });
 });
 
-// router.get('/articles-json', function(req, res) {
-//     Articles.find({}, function(err, doc) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.json(doc);
-//         }
-//     });
-// });
-
-// router.get('/clearAll', function(req, res) {
-//     Articles.remove({}, function(err, doc) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log('removed all articles');
-//         }
-
-//     });
-//     res.redirect('/articles-json');
-// });
-
 router.get('/readArticle/:id', function(req, res){
-  var articleId = req.params.id;
-  var articleObj = {
-    article: [],
-    author: [],
-    body: []
-  };
+  
+//   console.log(req);
+//   var article = {
+//     id: req.params.id,
+//     body: [],
+//     title: "",
+//     author: ""
+//   };
 
-    Articles.findOne({ _id: articleId })
+    Articles.findOne({ _id: req.params.id })
       .populate('comments')
       .exec(function(err, doc){
       if(err){
         console.log('Error: ' + err);
       } 
       else {
-        var link = 'http://www.sciencemag.org/' + doc.link;
-        request(link, function(error, response, html) {
-          var $ = cheerio.load(html);
+        console.log(doc);
+        var link2 = 'http://www.sciencemag.org' + doc.link;
+        console.log(link2);
+        request(link2, function(error, response, html) {
+            var article = {
+                body: [],
+                info: doc,
+                author: ""
+            };
+          
+            var $ = cheerio.load(html);
 
-          articleObj.author = $('p.byline.byline--article').children('a').text();
+            article.author = $('p.byline.byline--article').children('a').text();
+            $('div.article__body').children('p').each(function(i, element){
+                var text = $(this).text();
+                article.body.push(text);
+            });
 
-          $('div.article__body').children('p').each(function(i, element){
-            text = $(this).text();
-            articleObj.body.push(text);
-            res.render('./article', articleObj);
-          });
-          return false;
-        });
+            console.log("article:  \n" + JSON.stringify(article));
+            res.render('./article', article);
+        })
+        
+        
       }
 
     });
+    
 });
 
 router.post('/comments/:id', function(req, res) {
-  var user = req.body.name;
-  var content = req.body.comments;
+
   var articleId = req.params.id;
 
-  var commentObj = {
-    name: user,
-    body: content
-  };
+//   var user = req.body.name;
+//   var content = req.body.comments;
+  
+
+//   var commentObj = {
+//     name: user,
+//     body: content
+//   };
  
-  var newComment = new Comments(commentObj);
+console.log(req.body.name + " " + req.body.comments);
+
+  var newComment = new Comments({
+      name: req.body.name,
+      body: req.body.comment
+  });
 
   newComment.save(function(err, doc) {
+      console.log(doc);
+      console.log(req.body);
       
       if (err) {
           console.log(doc);
