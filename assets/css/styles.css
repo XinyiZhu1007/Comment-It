@@ -1,0 +1,130 @@
+body{
+    font-family: 'Inconsolata', monospace;
+    background: url("../images/bg.png");
+    color: rgb(44, 155, 108);
+    margin: 0;
+}
+
+.nav-wrapper{
+    display: flex;
+    flex-flow: row;
+    justify-content: right;
+    width: 90%;
+    margin: 2%;
+}
+
+.right{
+    padding-right: 2%;
+}
+main{
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.35);
+    padding-bottom: 2.5%;
+    margin: auto;
+}
+
+.content-title{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    margin-bottom: 3%;
+}
+
+.title-title{
+    text-align: center;
+}
+
+.scrape-link{
+    text-align: center;
+    background-color: rgba(55, 236, 182, 0.4);
+    padding: 2%;
+    width: 50%;
+    margin: auto; 
+}
+
+.scrape-link:focus{
+    font: italic;
+}
+
+.article-sum{
+    display: flex;
+    flex-flow: row;
+}
+
+.article-title{
+    width: 80%;
+    margin: 1%;
+}
+
+.article-link{
+    width: 15%;
+    margin: 1%;
+    color: purple;
+}
+
+.article-link:focus{
+    font: italic;
+}
+
+/* article page */
+
+.read-article{
+    padding-right: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+.read-article-title{
+    font: bolder;
+    text-decoration: underline;
+    text-align: center;
+}
+
+.read-article-author{
+    font: italic;
+    text-align: center;
+}
+
+.read-article-p{
+    margin-right: 3%;
+    margin-left: 3%;
+    text-align: left;
+}
+
+.comment{
+    color: rgb(197, 84, 197);
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+}
+
+.comment-head{
+    text-align: center;
+}
+
+.input-field{
+    margin-bottom: 1.5%;
+}
+
+textarea{
+    width:70vh;
+    height: 30vh;
+}
+
+.comment-list-display{
+    text-align: right;
+    display: flex;
+    flex-flow: row;
+    width: 50%;
+    margin: auto;
+}
+
+.comment-list-name{
+    text-align: center;
+    padding-right: 2%;
+}
+
+.comment-list-name{
+    text-align: center;
+}

@@ -1,18 +1,16 @@
-<div>
-    <h1 class="card center-align">What's New On Science</h1>
-    <div class="row">
-      <div class="col s3"></div>
-      <h5 class="card center-align"><a href="/scrape">Click for Something New from Science</a></h5>
-    </div>
+<div class="content-title">
+    <h1 class="title-title">What's New On Science</h1>
+    <h5 class="scrape-link"><a href="/scrape">Click for Something New from Science</a></h5>
+    
 </div>
 
 <div class="row">
   <div class="col s2"></div>
   <div class ="col s8 left-align">
     {{#each article}}
-      <div class="card-panel">
-        <h4>{{this.title}}</h4>
-        <a href = "/readArticle/{{this._id}}" class="waves-effect waves-light btn lighten-1" id="btnSignUp">Read Article</a>
+      <div class="article-sum">
+        <h4 class="article-title">{{this.title}}</h4>
+        <a class="article-link" href="/readArticle/{{this._id}}" class="waves-effect waves-light btn lighten-1" id="btnSignUp">Read Article</a>
       </div>
     {{/each}}
   </div>

@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var handlebars = require('express-handlebars');
+var path = require('path');
+
 
 var app = express();
 
@@ -11,7 +13,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json()); 
 
-app.use(express.static(process.cwd() + '/public'));
+app.use(express.static(__dirname));
+
 
 app.engine('handlebars', handlebars({
   defaultLayout: 'main'

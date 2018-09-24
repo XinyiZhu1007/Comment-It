@@ -109,7 +109,6 @@ router.get('/readArticle/:id', function(req, res){
             res.render('./article', article);
         })
         
-        
       }
 
     });

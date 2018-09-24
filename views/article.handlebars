@@ -1,17 +1,16 @@
-<div class="row"> 
-  <h3 class="card">{{info.title}}</h3>
-  <h5 class="card-panel"><i>{{author}}</i></h5>
+<div class="read-article"> 
+  <h2 class="read-article-title">{{info.title}}</h2>
+  <h5 class="read-article-author"><i>{{author}}</i></h5>
   {{#each body}}
-  <h5 class="card-panel">{{this}}</h5>
+  <h5 class="read-article-p">{{this}}</h5>
   {{/each}}
   
 </div>
 
 
-<div class="row">
-  <div class="col s2"></div>
+<div class="row comment comment-input">
    <form action="/comments/{{info._id}}" method="POST" class="card-panel">
-    <h3>Comment on this Article:</h3>
+    <h3 class="comment-head">Comment on this Article:</h3>
       <div class="row">
         <div class="input-field">
           <center><div class="input-title">name</div>
@@ -33,14 +32,13 @@
 
 {{!-- comments --}}
 <div class="row">
-  <div class="col s2"></div>
-    <div class="col s8">
-      <h3>Comments:</h3>
+    <div class=" comment comment-list">
+      <h3 class="comment-head">Comments:</h3>
         {{#if info.comments}}
           {{#each info.comments}}
-            <div class="card">
-              <p id="nameComment"><i>{{name}}</i></p>
-              <p>{{body}}<p>
+            <div class="comment-list-display">
+              <p class="comment-list-name" id="nameComment"><i>{{name}} : </i></p>
+              <p class="comment-list-content">{{body}}<p>
             </div>
           {{/each}}
           {{else}}
